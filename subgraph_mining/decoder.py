@@ -138,6 +138,18 @@ def pattern_growth(dataset, task, args):
                 neighs.append(neigh)
                 if args.node_anchored:
                     anchors.append(0)   # after converting labels, 0 will be anchor
+        elif args.sample_method == "canonical":
+            for j in tqdm(range(args.n_neighborhoods)):
+                graph, neigh = utils.sample_neigh_canonical(graphs,
+                    random.randint(args.min_neighborhood_size,
+                        args.max_neighborhood_size))
+                neigh = graph.subgraph(neigh)
+                neigh = nx.convert_node_labels_to_integers(neigh)
+                neigh.add_edge(0, 0)
+                neighs.append(neigh)
+                if args.node_anchored:
+                    anchors.append(0)   # after converting labels, 0 will be anchor
+            
 
     embs = []
     if len(neighs) % args.batch_size != 0:

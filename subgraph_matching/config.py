@@ -43,7 +43,7 @@ def parse_encoder(parser, arg_str=None):
         help='tag to identify the run')
 
     enc_parser.set_defaults(conv_type='SAGE',
-                        method_type='order',
+                        method_type='mlp',
                         dataset='syn',
                         n_layers=8,
                         batch_size=64,
@@ -60,7 +60,7 @@ def parse_encoder(parser, arg_str=None):
                         test_set='',
                         eval_interval=1000,
                         n_workers=4,
-                        model_path="ckpt/model.pt",
+                        model_path="ckpt/model_mlp.pt",
                         tag='',
                         val_size=4096,
                         node_anchored=True)

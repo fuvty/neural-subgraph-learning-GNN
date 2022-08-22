@@ -1,4 +1,5 @@
 from collections import defaultdict, Counter
+from typing import List
 
 from deepsnap.graph import Graph as DSGraph
 from deepsnap.batch import Batch
@@ -37,6 +38,29 @@ def sample_neigh(graphs, size):
             frontier = [x for x in frontier if x not in visited]
         if len(neigh) == size:
             return graph, neigh
+
+def sample_neigh_canonical(graphs: List[nx.Graph], size):
+    ps = np.array([len(g) for g in graphs], dtype=np.float)
+    ps /= np.sum(ps)
+    dist = stats.rv_discrete(values=(np.arange(len(graphs)), ps))
+    while True:
+        idx = dist.rvs()
+        #graph = random.choice(graphs)
+        graph = graphs[idx]
+        start_node = random.choice(list(graph.nodes))
+
+        neigh = set([start_node])
+        frontier = set([start_node])
+        while len(neigh) < size and frontier:
+            add_node = set()
+            for n in frontier:
+                add_node.update([n for n in graph.neighbors(n) if n<=start_node])
+            frontier = add_node.difference(neigh)
+            neigh = neigh.union(frontier)
+
+        if len(neigh) == size:
+            return graph, list(neigh)
+
 
 cached_masks = None
 def vec_hash(v):
