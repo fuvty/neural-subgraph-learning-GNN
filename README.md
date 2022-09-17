@@ -1,14 +1,8 @@
 # Neural Subgraph Learning Library
 
-Neural Subgraph Learning (NSL) is a general library that implements various tasks related to
-learning of subgraph relations.
-
-It is able to perform 2 tasks:
-1. Neural subgraph matching.
-2. Frequent subgraph mining.
+Neural Subgraph Learning (NSL) is a general library that implements various tasks related to learning of subgraph relations.
 
 ## Neural Subgraph Matching
-The library implements the algorithm [NeuroMatch](http://snap.stanford.edu/subgraph-matching/).
 
 ### Problem setup
 Given a query graph Q anchored at node q, and a target graph T anchored at node v,
@@ -41,24 +35,6 @@ The `neural_matching` folder contains an encoder that uses GNN to map the query 
 embedding space and make subgraph predictions.
 
 Available configurations can be found in `subgraph_matching/config.py`.
-
-
-## Frequent Subgraph Mining
-This package also contains an implementation of SPMiner, a graph neural network based framework to extract frequent subgraph patterns from an input graph dataset.
-
-Running the pipeline consists of training the encoder on synthetic data, then running the decoder on the dataset from which to mine patterns.
-
-Full configuration options can be found in `subgraph_matching/config.py` and `subgraph_mining/config.py`.
-
-### Run SPMiner
-To run SPMiner to identify common subgraph pattern, the prerequisite is to have a checkpoint of
-trained subgraph matching model (obtained by training the GNN encoder).
-The config argument `args.model_path` (`subgraph_matching/config.py`) specifies the location of the
-saved checkpoint, and is shared for both the `subgraph_matching` and `subgraph_mining` models.
-1. `python3 -m subgraph_mining.decoder --dataset=enzymes --node_anchored`
-
-Full configuration options can be found in `decoder/config.py`. SPMiner also shares the
-configurations of NeuroMatch `subgraph_matching/config.py` since it's used as a subroutine.
 
 ## Analyze results
 - Analyze the order embeddings after training the encoder: `python3 -m analyze.analyze_embeddings --node_anchored`

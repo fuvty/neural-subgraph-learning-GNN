@@ -6,6 +6,11 @@ HYPERPARAM_SEARCH = False
 HYPERPARAM_SEARCH_N_TRIALS = None   # how many grid search trials to run
                                     #    (set to None for exhaustive search)
 
+import os
+import sys
+
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+
 import argparse
 from itertools import permutations
 import pickle
@@ -25,7 +30,7 @@ import torch.nn.functional as F
 import torch.optim as optim
 from torch.utils.tensorboard import SummaryWriter
 from torch_geometric.data import DataLoader
-from torch_geometric.datasets import TUDataset
+from torch_geometric.datasets import TUDataset, WordNet18RR
 import torch_geometric.utils as pyg_utils
 import torch_geometric.nn as pyg_nn
 
@@ -161,6 +166,10 @@ def train_loop(args):
     loaders = data_source.gen_data_loaders(args.val_size, args.batch_size,
         train=False, use_distributed_sampling=False)
     test_pts = []
+
+    # timer
+    start_time = time.time()
+
     for batch_target, batch_neg_target, batch_neg_query in zip(*loaders):
         pos_a, pos_b, neg_a, neg_b = data_source.gen_batch(batch_target,
             batch_neg_target, batch_neg_query, False)
@@ -199,6 +208,8 @@ def train_loop(args):
         in_queue.put(("done", None))
     for worker in workers:
         worker.join()
+
+    print("main loop took {:.2f} seconds".format(time.time() - start_time))
 
 def main(force_test=False):
     mp.set_start_method("spawn", force=True)

@@ -1,9 +1,15 @@
+import os
+import sys
+
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+
 from common import utils
 from collections import defaultdict
 from datetime import datetime
 from sklearn.metrics import roc_auc_score, confusion_matrix
 from sklearn.metrics import precision_recall_curve, average_precision_score
 import torch
+import time
 
 USE_ORCA_FEATS = False # whether to use orca motif counts along with embeddings
 MAX_MARGIN_SCORE = 1e9 # a very large margin score to given orca constraints
@@ -126,4 +132,7 @@ def validation(args, model, test_pts, logger, batch_n, epoch, verbose=False):
 
 if __name__ == "__main__":
     from subgraph_matching.train import main
+    # timing
+    start_time = time.time()
     main(force_test=True)
+    print("Total time: {:.2f} seconds".format(time.time() - start_time))
